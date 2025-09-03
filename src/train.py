@@ -48,7 +48,7 @@ def train_and_eval(use_glcm, patch_size, stride, batch_size, epochs, lr, root):
 
     # Load dataset with patch size and stride
     dataset = DamageDataset(train_pre, train_post, train_mask, patch_size=patch_size, stride=stride)
-    analyze_class_distribution(dataset)
+    # analyze_class_distribution(dataset) # takes time with no return or use
 
     train_size = int(0.8 * len(dataset))
     val_size = len(dataset) - train_size

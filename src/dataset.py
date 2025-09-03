@@ -30,6 +30,8 @@ class DamageDataset(Dataset):
         # Collect image samples
         self.filenames = sorted([f for f in os.listdir(mask_dir) if f.endswith(f"_{mode}_disaster_target.png")])
         self.samples = []
+        patches_featuring_class = {'class0':0, 'class1':0, 'class2':0, 'class3':0, 'class4':0}
+        print("Patches featuring class 4:")
         for fname in self.filenames:
             basename = fname.replace(f"_{mode}_disaster_target.png", "")
             mask = np.array(Image.open(os.path.join(self.mask_dir, fname)).convert('L'))
@@ -37,10 +39,51 @@ class DamageDataset(Dataset):
             for y in range(0, h - patch_size + 1, stride):
                 for x in range(0, w - patch_size + 1, stride):
                     patch = mask[y:y + patch_size, x:x + patch_size]
+
+                    # downsampling
                     include = (4 in patch or 3 in patch or 2 in patch or np.random.rand() < 0.1)
+
+
                     if include:
                         is_priority = any(cls in patch for cls in [2, 3, 4])
+                        print((f'\t{basename, x, y}\n') if 4 in patch else "", end="")
                         self.samples.append((basename, x, y, is_priority))
+
+                        has_c0, has_c1, has_c2, has_c3, has_c4 = (c in patch for c in [0, 1, 2, 3, 4])  # boolean
+
+                        if has_c0:
+                            patches_featuring_class[f'class0'] += 1
+                        if has_c1:
+                            patches_featuring_class[f'class1'] += 1
+                        if has_c2:
+                            patches_featuring_class[f'class2'] += 1
+                        if has_c3:
+                            patches_featuring_class[f'class3'] += 1
+                        if has_c4:
+                            patches_featuring_class[f'class4'] += 1
+
+
+        print(f"{25 * '-'} Undersampling Complete {25 * '-'}")
+        print("Number of patches featuring classes:")
+        for key, value in patches_featuring_class.items():
+            print(f'\t{key} : {value}')
+
+        """
+        We are removing class 0 by 90%
+        We need to oversmaple minority
+        - Count amount of patches
+        - Oversample number of patches and undersample majority
+            - to do this take a random patch and make sure the name doesnt conflict (change 19th character)
+            / option 1: load all samples; then go through samples randomly until quota is filled
+            / option 2: as samples are loading; duplicate the samplesas you are going
+        """
+
+    def oversampling(self, class0=1, class1=1, class2=1, class3=1, class4=1):
+        for sample in self.samples:
+            if 4 in sample:
+                return None
+
+        self.samples.append()
 
     def __len__(self):
         return len(self.samples)
