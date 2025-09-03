@@ -7,7 +7,7 @@ from torchvision import transforms
 
 # Dataset class to handle pre, post, and mask images
 class DamageDataset(Dataset):
-    def __init__(self, pre_dir, post_dir, mask_dir, patch_size=128, stride=64, mode='post', balance = False, oversample=2):
+    def __init__(self, pre_dir, post_dir, mask_dir, patch_size=128, stride=64, mode='post', balance = False, oversample=10):
         self.pre_dir = pre_dir
         self.post_dir = post_dir
         self.mask_dir = mask_dir
@@ -65,13 +65,19 @@ class DamageDataset(Dataset):
             print(f'\t{key} : {value}')
         print("-------------- All Samples Loaded --------------\n"
               "With oversampling/undersampling take this percentage of each class:\n")
-        percent2include = {'class0': (oversample * patches_featuring_class[f'class4'] ),
-                           'class1': (oversample * patches_featuring_class[f'class4']),
-                           'class2': (oversample * patches_featuring_class[f'class4']),
-                           'class3': (oversample * patches_featuring_class[f'class4']),
-                           'class4': (patches_featuring_class[f'class4'] / patches_featuring_class[f'class0'])
+        number_ofc4_patches = oversample * patches_featuring_class[f'class4']
+        percent2include = {'class0': (number_ofc4_patches / patches_featuring_class[f'class0']) * 100,
+                           'class1': (number_ofc4_patches / patches_featuring_class[f'class1']) * 100,
+                           'class2': (number_ofc4_patches / patches_featuring_class[f'class2']) * 100,
+                           'class3': (number_ofc4_patches / patches_featuring_class[f'class3']) * 100,
+                           'class4': (oversample) * 100
                            }
-        print(percent2include)
+
+        for key, value in percent2include.items():
+            print(f'{key} : {value}%')
+
+
+
         ###############################################################################################
         """
         We are removing class 0 by 90%
