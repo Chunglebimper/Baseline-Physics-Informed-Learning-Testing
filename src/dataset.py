@@ -83,7 +83,7 @@ class DamageDataset(Dataset):
             for y in range(0, h - patch_size + 1, stride):
                 for x in range(0, w - patch_size + 1, stride):
                     patch = mask[y:y + patch_size, x:x + patch_size]
-
+                    
                     has_c0, has_c1, has_c2, has_c3, has_c4 = (c in patch for c in [0, 1, 2, 3, 4])  # boolean
 
                     include = False
@@ -110,7 +110,8 @@ class DamageDataset(Dataset):
 
         for key, value in patches_featuring_class.items():
             print(f'\t{key} : {value}')
-        print(temp)
+
+        
 
         ###############################################################################################
         """
