@@ -71,6 +71,8 @@ class DamageDataset(Dataset):
 
         for key, value in percent2include.items():
             print(f'{key} : {value}%')
+        
+        temp = 0
 
         patches_featuring_class = {'class0': 0, 'class1': 0, 'class2': 0, 'class3': 0, 'class4': 0}
         # Now use percentages calculated to balance the things
@@ -84,21 +86,23 @@ class DamageDataset(Dataset):
 
                     has_c0, has_c1, has_c2, has_c3, has_c4 = (c in patch for c in [0, 1, 2, 3, 4])  # boolean
 
-                    if has_c4:
-                        include = np.random.rand() <= (percent2include['class4'] /100)
-                        patches_featuring_class[f'class4'] += 1
-                    elif has_c3:
-                        include = np.random.rand() <= (percent2include['class3'] /100)
-                        patches_featuring_class[f'class3'] += 1
-                    elif has_c2:
-                        include = np.random.rand() <= (percent2include['class2'] /100)
-                        patches_featuring_class[f'class2'] += 1
-                    elif has_c1:
-                        include = np.random.rand() <= (percent2include['class1'] /100)
-                        patches_featuring_class[f'class1'] += 1
-                    elif has_c0:
-                        include = np.random.rand() <= (percent2include['class0'] /100)
-                        patches_featuring_class[f'class0'] += 1
+                    include = False
+
+                    if has_c0 and np.random.rand() <= (percent2include['class0'] / 100):
+                        include = True
+                        patches_featuring_class['class0'] += 1
+                    if has_c1 and np.random.rand() <= (percent2include['class1'] / 100):
+                        include = True
+                        patches_featuring_class['class1'] += 1
+                    if has_c2 and np.random.rand() <= (percent2include['class2'] / 100):
+                        include = True
+                        patches_featuring_class['class2'] += 1
+                    if has_c3 and np.random.rand() <= (percent2include['class3'] / 100):
+                        include = True
+                        patches_featuring_class['class3'] += 1
+                    if has_c4 and np.random.rand() <= (percent2include['class4'] / 100):
+                        include = True
+                        patches_featuring_class['class4'] += 1
 
                     if include:
                         is_priority = any(cls in patch for cls in [2, 3, 4])
@@ -106,7 +110,7 @@ class DamageDataset(Dataset):
 
         for key, value in patches_featuring_class.items():
             print(f'\t{key} : {value}')
-
+        print(temp)
 
         ###############################################################################################
         """
