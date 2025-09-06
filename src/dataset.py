@@ -180,6 +180,13 @@ class DamageDataset(Dataset):
                                 print(patches_featuring_class['class1'])
                                 self.samples.append((basename, x, y, is_priority))
 
+                            if count >= run_count:
+                                break
+                        if count >= run_count:
+                            break
+                    if count >= run_count:
+                        break
+
         for key, value in patches_featuring_class.items():
             print(f'\t{key} : {value}')
 
