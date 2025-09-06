@@ -139,7 +139,7 @@ class DamageDataset(Dataset):
             count = 0
 
             while (count < run_count) and (run_count > 0):
-                print('running...')
+                print(f'running... {count} < {run_count}')
                 for fname in self.filenames:
                     basename = fname.replace(f"_{mode}_disaster_target.png", "")
                     mask = np.array(Image.open(os.path.join(self.mask_dir, fname)).convert('L'))
