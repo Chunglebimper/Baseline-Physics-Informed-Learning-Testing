@@ -133,6 +133,7 @@ class DamageDataset(Dataset):
         # quota is the oversample * minority class; this is checked against dictionary
 
         # for each class, calculate the amount of images needed to duplicate
+        """
         for key, value in patches_featuring_class.items():
             run_count = number_ofc4_patches - value
             count = 0
@@ -173,7 +174,37 @@ class DamageDataset(Dataset):
                             if include:
                                 is_priority = any(cls in patch for cls in [2, 3, 4])
                                 self.samples.append((basename, x, y, is_priority))
+        """
+        for key, value in patches_featuring_class.items():
+            run_count = number_ofc4_patches - value
+            count = 0
+            target_class = class_labels[key]
 
+            while count < run_count and run_count > 0:
+                for fname in self.filenames:
+                    basename = fname.replace(f"_{mode}_disaster_target.png", "")
+                    mask = np.array(Image.open(os.path.join(self.mask_dir, fname)).convert('L'))
+                    h, w = mask.shape
+
+                    for y in range(0, h - patch_size + 1, stride):
+                        for x in range(0, w - patch_size + 1, stride):
+                            patch = mask[y:y + patch_size, x:x + patch_size]
+
+                            if (target_class in patch) and (np.random.rand() <= 0.25):
+                                patches_featuring_class[key] += 1
+                                count += 1
+                                is_priority = any(c in patch for c in [2, 3, 4])
+                                self.samples.append((basename, x, y, is_priority))
+
+                            if count >= run_count:
+                                break
+                        if count >= run_count:
+                            break
+                    if count >= run_count:
+                        break
+
+        for key, value in patches_featuring_class.items():
+            print(f'\t{key} : {value}')
 
 
     def __len__(self):
