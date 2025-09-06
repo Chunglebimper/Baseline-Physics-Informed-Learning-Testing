@@ -139,6 +139,7 @@ class DamageDataset(Dataset):
             count = 0
 
             while (count < run_count) and (run_count > 0):
+                print("key: ", key)
                 print(f'running... {count} < {run_count}')
                 for fname in self.filenames:
                     basename = fname.replace(f"_{mode}_disaster_target.png", "")
