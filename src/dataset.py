@@ -83,32 +83,37 @@ class DamageDataset(Dataset):
             h, w = mask.shape
             for y in range(0, h - patch_size + 1, stride):
                 for x in range(0, w - patch_size + 1, stride):
-                    if not quota:
-                        patch = mask[y:y + patch_size, x:x + patch_size]
 
-                        has_c0, has_c1, has_c2, has_c3, has_c4 = (c in patch for c in [0, 1, 2, 3, 4])  # boolean
+                    patch = mask[y:y + patch_size, x:x + patch_size]
 
-                        include = False
+                    has_c0, has_c1, has_c2, has_c3, has_c4 = (c in patch for c in [0, 1, 2, 3, 4])  # boolean
 
-                        if has_c0 and np.random.rand() <= (percent2include['class0'] / 100) and (QUOTA <= patches_featuring_class['class0']):
-                            include = True
-                            patches_featuring_class['class0'] += 1
-                        if has_c1 and np.random.rand() <= (percent2include['class1'] / 100) and (QUOTA <= patches_featuring_class['class1']):
-                            include = True
-                            patches_featuring_class['class1'] += 1
-                        if has_c2 and np.random.rand() <= (percent2include['class2'] / 100) and (QUOTA <= patches_featuring_class['class2']):
-                            include = True
-                            patches_featuring_class['class2'] += 1
-                        if has_c3 and np.random.rand() <= (percent2include['class3'] / 100) and (QUOTA <= patches_featuring_class['class3']):
-                            include = True
-                            patches_featuring_class['class3'] += 1
-                        if has_c4 and np.random.rand() <= (percent2include['class4'] / 100) and (QUOTA <= patches_featuring_class['class4']):
-                            include = True
-                            patches_featuring_class['class4'] += 1
+                    include = False
 
-                        if include:
-                            is_priority = any(cls in patch for cls in [2, 3, 4])
-                            self.samples.append((basename, x, y, is_priority))
+                    if has_c0 and np.random.rand() <= (percent2include['class0'] / 100) and (
+                            QUOTA <= patches_featuring_class['class0']):
+                        include = True
+                        patches_featuring_class['class0'] += 1
+                    if has_c1 and np.random.rand() <= (percent2include['class1'] / 100) and (
+                            QUOTA <= patches_featuring_class['class1']):
+                        include = True
+                        patches_featuring_class['class1'] += 1
+                    if has_c2 and np.random.rand() <= (percent2include['class2'] / 100) and (
+                            QUOTA <= patches_featuring_class['class2']):
+                        include = True
+                        patches_featuring_class['class2'] += 1
+                    if has_c3 and np.random.rand() <= (percent2include['class3'] / 100) and (
+                            QUOTA <= patches_featuring_class['class3']):
+                        include = True
+                        patches_featuring_class['class3'] += 1
+                    if has_c4 and np.random.rand() <= (percent2include['class4'] / 100) and (
+                            QUOTA <= patches_featuring_class['class4']):
+                        include = True
+                        patches_featuring_class['class4'] += 1
+
+                    if include:
+                        is_priority = any(cls in patch for cls in [2, 3, 4])
+                        self.samples.append((basename, x, y, is_priority))
 
         for key, value in patches_featuring_class.items():
             print(f'\t{key} : {value}')
