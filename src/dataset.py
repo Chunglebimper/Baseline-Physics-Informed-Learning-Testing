@@ -136,46 +136,44 @@ class DamageDataset(Dataset):
         for key, value in patches_featuring_class.items():
             run_count = number_ofc4_patches - value
             count = 0
-            if run_count > 0:
-                continue
-            else:
-                while (count < run_count):
-                    for fname in self.filenames:
-                        basename = fname.replace(f"_{mode}_disaster_target.png", "")
-                        mask = np.array(Image.open(os.path.join(self.mask_dir, fname)).convert('L'))
-                        h, w = mask.shape
-                        for y in range(0, h - patch_size + 1, stride):
-                            for x in range(0, w - patch_size + 1, stride):
-                                patch = mask[y:y + patch_size, x:x + patch_size]
 
-                                has_c0, has_c1, has_c2, has_c3, has_c4 = (c in patch for c in [0, 1, 2, 3, 4])  # boolean
+            while (count < run_count) and (run_count > 0):
+                for fname in self.filenames:
+                    basename = fname.replace(f"_{mode}_disaster_target.png", "")
+                    mask = np.array(Image.open(os.path.join(self.mask_dir, fname)).convert('L'))
+                    h, w = mask.shape
+                    for y in range(0, h - patch_size + 1, stride):
+                        for x in range(0, w - patch_size + 1, stride):
+                            patch = mask[y:y + patch_size, x:x + patch_size]
 
-                                include = False
+                            has_c0, has_c1, has_c2, has_c3, has_c4 = (c in patch for c in [0, 1, 2, 3, 4])  # boolean
 
-                                if has_c4 and (key == 'class4') and (np.random.rand() <= 0.25):
-                                    patches_featuring_class['class4'] += 1
-                                    include = True
-                                    count += 1
-                                if has_c3 and (key == 'class3') and (np.random.rand() <= 0.25):
-                                    patches_featuring_class['class3'] += 1
-                                    include = True
-                                    count += 1
-                                if has_c2 and (key == 'class2') and (np.random.rand() <= 0.25):
-                                    patches_featuring_class['class2'] += 1
-                                    include = True
-                                    count += 1
-                                if has_c1 and (key == 'class1') and (np.random.rand() <= 0.25):
-                                    patches_featuring_class['class1'] += 1
-                                    include = True
-                                    count += 1
-                                if has_c0 and (key == 'class0') and (np.random.rand() <= 0.25):
-                                    patches_featuring_class['class0'] += 1
-                                    include = True
-                                    count += 1
+                            include = False
 
-                                if include:
-                                    is_priority = any(cls in patch for cls in [2, 3, 4])
-                                    self.samples.append((basename, x, y, is_priority))
+                            if has_c4 and (key == 'class4') and (np.random.rand() <= 0.25):
+                                patches_featuring_class['class4'] += 1
+                                include = True
+                                count += 1
+                            if has_c3 and (key == 'class3') and (np.random.rand() <= 0.25):
+                                patches_featuring_class['class3'] += 1
+                                include = True
+                                count += 1
+                            if has_c2 and (key == 'class2') and (np.random.rand() <= 0.25):
+                                patches_featuring_class['class2'] += 1
+                                include = True
+                                count += 1
+                            if has_c1 and (key == 'class1') and (np.random.rand() <= 0.25):
+                                patches_featuring_class['class1'] += 1
+                                include = True
+                                count += 1
+                            if has_c0 and (key == 'class0') and (np.random.rand() <= 0.25):
+                                patches_featuring_class['class0'] += 1
+                                include = True
+                                count += 1
+
+                            if include:
+                                is_priority = any(cls in patch for cls in [2, 3, 4])
+                                self.samples.append((basename, x, y, is_priority))
 
         for key, value in patches_featuring_class.items():
             print(f'\t{key} : {value}')
