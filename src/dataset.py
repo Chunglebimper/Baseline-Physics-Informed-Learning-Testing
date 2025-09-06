@@ -111,6 +111,8 @@ class DamageDataset(Dataset):
         for key, value in patches_featuring_class.items():
             print(f'\t{key} : {value}')
 
+
+
         
 
         ###############################################################################################
@@ -122,14 +124,57 @@ class DamageDataset(Dataset):
             - to do this take a random patch and make sure the name doesnt conflict (change 19th character)
             / option 1: load all samples; then go through samples randomly until quota is filled
             / option 2: as samples are loading; duplicate the samples as you are going
+            
+        - Undersampled all classes, now we need to duplicate the elements until quota is filled
+         - name conflict
         """
+        # now oversample and duplicate
+        # create a quota fucntion that will loop so that we get randomnes duplicates; until the quota is reached
+        # quota is the oversample * minority class; this is checked against dictionary
 
-    def oversampling(self, class0=1, class1=1, class2=1, class3=1, class4=1):
-        for sample in self.samples:
-            if 4 in sample:
-                return None
+        # for each class, calculate the amount of images needed to duplicate
+        for key, value in patches_featuring_class.items():
+            run_count = number_ofc4_patches - value
+            count = 0
+            while (count <= run_count) and (run_count > 0):
+                for fname in self.filenames:
+                    basename = fname.replace(f"_{mode}_disaster_target.png", "")
+                    mask = np.array(Image.open(os.path.join(self.mask_dir, fname)).convert('L'))
+                    h, w = mask.shape
+                    for y in range(0, h - patch_size + 1, stride):
+                        for x in range(0, w - patch_size + 1, stride):
+                            patch = mask[y:y + patch_size, x:x + patch_size]
 
-        self.samples.append()
+                            has_c0, has_c1, has_c2, has_c3, has_c4 = (c in patch for c in [0, 1, 2, 3, 4])  # boolean
+
+                            include = False
+
+                            if has_c4 and (key == 'class4') and (np.random.rand() <= 0.25):
+                                patches_featuring_class['class4'] += 1
+                                include = True
+                                count += 1
+                            if has_c3 and (key == 'class3') and (np.random.rand() <= 0.25):
+                                patches_featuring_class['class3'] += 1
+                                include = True
+                                count += 1
+                            if has_c2 and (key == 'class2') and (np.random.rand() <= 0.25):
+                                patches_featuring_class['class2'] += 1
+                                include = True
+                                count += 1
+                            if has_c1 and (key == 'class1') and (np.random.rand() <= 0.25):
+                                patches_featuring_class['class1'] += 1
+                                include = True
+                                count += 1
+                            if has_c0 and (key == 'class0') and (np.random.rand() <= 0.25):
+                                patches_featuring_class['class0'] += 1
+                                include = True
+                                count += 1
+
+                            if include:
+                                is_priority = any(cls in patch for cls in [2, 3, 4])
+                                self.samples.append((basename, x, y, is_priority))
+
+
 
     def __len__(self):
         return len(self.samples)
