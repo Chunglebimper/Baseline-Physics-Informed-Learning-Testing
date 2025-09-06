@@ -91,23 +91,23 @@ class DamageDataset(Dataset):
                     include = False
 
                     if has_c0 and np.random.rand() <= (percent2include['class0'] / 100) and (
-                            QUOTA <= patches_featuring_class['class0']):
+                            QUOTA >= patches_featuring_class['class0']):
                         include = True
                         patches_featuring_class['class0'] += 1
                     if has_c1 and np.random.rand() <= (percent2include['class1'] / 100) and (
-                            QUOTA <= patches_featuring_class['class1']):
+                            QUOTA >= patches_featuring_class['class1']):
                         include = True
                         patches_featuring_class['class1'] += 1
                     if has_c2 and np.random.rand() <= (percent2include['class2'] / 100) and (
-                            QUOTA <= patches_featuring_class['class2']):
+                            QUOTA >= patches_featuring_class['class2']):
                         include = True
                         patches_featuring_class['class2'] += 1
                     if has_c3 and np.random.rand() <= (percent2include['class3'] / 100) and (
-                            QUOTA <= patches_featuring_class['class3']):
+                            QUOTA >= patches_featuring_class['class3']):
                         include = True
                         patches_featuring_class['class3'] += 1
                     if has_c4 and np.random.rand() <= (percent2include['class4'] / 100) and (
-                            QUOTA <= patches_featuring_class['class4']):
+                            QUOTA >= patches_featuring_class['class4']):
                         include = True
                         patches_featuring_class['class4'] += 1
 
