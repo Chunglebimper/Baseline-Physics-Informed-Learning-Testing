@@ -156,19 +156,19 @@ class DamageDataset(Dataset):
                                 patches_featuring_class['class4'] += 1
                                 include = True
                                 count += 1
-                            if has_c3 and (key == 'class3') and (np.random.rand() <= 0.25):
+                            elif has_c3 and (key == 'class3') and (np.random.rand() <= 0.25):
                                 patches_featuring_class['class3'] += 1
                                 include = True
                                 count += 1
-                            if has_c2 and (key == 'class2') and (np.random.rand() <= 0.25):
+                            elif has_c2 and (key == 'class2') and (np.random.rand() <= 0.25):
                                 patches_featuring_class['class2'] += 1
                                 include = True
                                 count += 1
-                            if has_c1 and (key == 'class1') and (np.random.rand() <= 0.25):
+                            elif has_c1 and (key == 'class1') and (np.random.rand() <= 0.25):
                                 patches_featuring_class['class1'] += 1
                                 include = True
                                 count += 1
-                            if has_c0 and (key == 'class0') and (np.random.rand() <= 0.25):
+                            elif has_c0 and (key == 'class0') and (np.random.rand() <= 0.25):
                                 patches_featuring_class['class0'] += 1
                                 include = True
                                 count += 1
