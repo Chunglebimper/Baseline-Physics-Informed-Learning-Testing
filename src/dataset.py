@@ -174,8 +174,10 @@ class DamageDataset(Dataset):
                                 include = True
                                 count += 1
 
+
                             if include:
                                 is_priority = any(cls in patch for cls in [2, 3, 4])
+                                print(patches_featuring_class['class1'])
                                 self.samples.append((basename, x, y, is_priority))
 
         for key, value in patches_featuring_class.items():
