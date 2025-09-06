@@ -140,6 +140,7 @@ class DamageDataset(Dataset):
         # quota is the oversample * minority class; this is checked against dictionary
 
         # for each class, calculate the amount of images needed to duplicate
+        self.duplicate_samples = []
         for key, value in patches_featuring_class.items():
             run_count = number_ofc4_patches - value
             count = 0
@@ -183,7 +184,7 @@ class DamageDataset(Dataset):
                             if include:
                                 is_priority = any(cls in patch for cls in [2, 3, 4])
                                 #print(patches_featuring_class['class1'])
-                                self.samples.append((basename, x, y, is_priority))
+                                self.duplicate_samples.append((basename, x, y, is_priority))
 
                             if count >= run_count:
                                 break
@@ -195,6 +196,8 @@ class DamageDataset(Dataset):
         for key, value in patches_featuring_class.items():
             print(f'\t{key} : {value}')
 
+        # retrun both the samples for validation and the samples for training which includes duplicates
+        return self.samples, (self.samples + self.duplicate_samples)
 
     def __len__(self):
         return len(self.samples)
