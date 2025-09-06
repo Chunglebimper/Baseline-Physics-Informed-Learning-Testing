@@ -177,6 +177,8 @@ class DamageDataset(Dataset):
                                     is_priority = any(cls in patch for cls in [2, 3, 4])
                                     self.samples.append((basename, x, y, is_priority))
 
+        for key, value in patches_featuring_class.items():
+            print(f'\t{key} : {value}')
 
 
     def __len__(self):
