@@ -135,9 +135,11 @@ class DamageDataset(Dataset):
         # for each class, calculate the amount of images needed to duplicate
         for key, value in patches_featuring_class.items():
             run_count = number_ofc4_patches - value
+            print(run_count)
             count = 0
 
             while (count < run_count) and (run_count > 0):
+                print('running...')
                 for fname in self.filenames:
                     basename = fname.replace(f"_{mode}_disaster_target.png", "")
                     mask = np.array(Image.open(os.path.join(self.mask_dir, fname)).convert('L'))
