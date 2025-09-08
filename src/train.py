@@ -45,12 +45,13 @@ def train_and_eval(use_glcm, patch_size, stride, batch_size, epochs, lr, root):
     train_pre = os.path.join(root, "img_pre")
     train_post = os.path.join(root, "img_post")
     train_mask = os.path.join(root, "gt_post")
-
+    # need an overhaul -------------------------------------------------------------
+    
     # Load dataset with patch size and stride
-    val_dataset, train_dataset = DamageDataset(train_pre, train_post, train_mask, patch_size=patch_size, stride=stride)
+    train_dataset = DamageDatasetTrain(train_pre, train_post, train_mask, patch_size=patch_size, stride=stride)
+    val_dataset = DamageDatasetValidation(train_pre, train_post, train_mask, length_of_train_set=len(dataset) ,patch_size=patch_size, stride=stride)
     # analyze_class_distribution(dataset) # takes time with no return or use
-    print(len(val_dataset))
-    print(len(train_dataset))
+   
 
 
     train_size = int(0.8 * len(dataset))
@@ -59,6 +60,8 @@ def train_and_eval(use_glcm, patch_size, stride, batch_size, epochs, lr, root):
 
     train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
     val_loader = DataLoader(val_dataset, batch_size=batch_size)
+
+    # need an overhaul ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
     # Initialize model, optimizer, and loss
     model = EnhancedDamageModel().to(device)
