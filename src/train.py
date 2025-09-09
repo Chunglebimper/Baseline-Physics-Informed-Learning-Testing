@@ -5,7 +5,7 @@ import time
 import torch
 import torch.nn.functional as F
 from torch.utils.data import DataLoader, random_split
-from dataset import DamageDataset
+from dataset import DamageDatasetTrain
 from model import EnhancedDamageModel
 from loss import adaptive_texture_loss
 import metrics  # Import the entire module
@@ -20,7 +20,7 @@ from sklearn.metrics import accuracy_score, f1_score, precision_score
 import metrics
 print("Loaded metrics.py from:", metrics.__file__)
 
-def train_and_eval(use_glcm, patch_size, stride, batch_size, epochs, lr, root):
+def train_and_eval(use_glcm, patch_size, stride, batch_size, epochs, lr, root, oversample):
     # create log file
     log = Log()
     log.open()
@@ -45,14 +45,11 @@ def train_and_eval(use_glcm, patch_size, stride, batch_size, epochs, lr, root):
     train_pre = os.path.join(root, "img_pre")
     train_post = os.path.join(root, "img_post")
     train_mask = os.path.join(root, "gt_post")
-    # need an overhaul -------------------------------------------------------------
     
     # Load dataset with patch size and stride
-    train_dataset = DamageDatasetTrain(train_pre, train_post, train_mask, patch_size=patch_size, stride=stride)
-    val_dataset = DamageDatasetValidation(train_pre, train_post, train_mask, length_of_train_set=len(dataset) ,patch_size=patch_size, stride=stride)
+    dataset = DamageDatasetTrain(train_pre, train_post, train_mask, patch_size=patch_size, stride=stride, oversample=oversample)
     # analyze_class_distribution(dataset) # takes time with no return or use
    
-
 
     train_size = int(0.8 * len(dataset))
     val_size = len(dataset) - train_size
@@ -61,7 +58,6 @@ def train_and_eval(use_glcm, patch_size, stride, batch_size, epochs, lr, root):
     train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
     val_loader = DataLoader(val_dataset, batch_size=batch_size)
 
-    # need an overhaul ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
     # Initialize model, optimizer, and loss
     model = EnhancedDamageModel().to(device)
