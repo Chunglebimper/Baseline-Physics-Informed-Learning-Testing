@@ -13,6 +13,7 @@ from metrics import compute_ordinal_conf_matrix, print_f1_per_class, calculate_x
 from utils import get_class_weights, analyze_class_distribution
 from visuals import plot_loss_curves, plot_multiclass_roc, visualize_predictions
 from sklearn.metrics import accuracy_score, f1_score, precision_score
+from mkdir import mkdir_results
 
 
 # Function to train and evaluate the model with logging
@@ -20,12 +21,15 @@ from sklearn.metrics import accuracy_score, f1_score, precision_score
 import metrics
 print("Loaded metrics.py from:", metrics.__file__)
 
-def train_and_eval(use_glcm, patch_size, stride, batch_size, epochs, lr, root, oversample):
+def train_and_eval(use_glcm, patch_size, stride, batch_size, epochs, lr, root, oversample, save_name):
     # create log file
-    log = Log()
+    results_path = mkdir_results(save_name) 
+    os.makedirs(results_path, exist_ok=True)            # create output directory
+    log = Log(path = f'{results_path}/log.txt')
     log.open()
-    params = use_glcm, patch_size, stride, batch_size, epochs, lr, root
+    params = use_glcm, patch_size, stride, batch_size, epochs, lr, root, oversample
     # begin logging
+    """
     log.append(f'{" Running config ":=^105}\n'
                 f'{"".join(f"{str(i):<{15}}" for i in ("use_glcm", "patch_size", "stride", "batch_size", "epochs", "lr", "root"))}\n'
                 f'{105 * "-"}\n'
@@ -35,6 +39,10 @@ def train_and_eval(use_glcm, patch_size, stride, batch_size, epochs, lr, root, o
                 f"{'Training with texture loss':<30}: {str(use_glcm)}\n"          
                 f'{105 * "-"}'
                 )
+                """
+    log.append(f'~{"".join(f"{str(i):<{15}}" for i in ("use_glcm", "patch_size", "stride", "batch_size", "epochs", "lr", "root", "oversample"))}')
+    for i in params:
+        log.append(f'{i}')
 
     print(f'Training on cuda cores: {torch.cuda.is_available()}')
     print(f"Training with texture loss: {use_glcm}")
@@ -58,6 +66,10 @@ def train_and_eval(use_glcm, patch_size, stride, batch_size, epochs, lr, root, o
     train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
     val_loader = DataLoader(val_dataset, batch_size=batch_size)
 
+    class_distro_dict = dataset.getDistribution()
+    log.append('~class 0-4:')
+    for _, value in class_distro_dict.items():
+        log.append(f'{value}')
 
     # Initialize model, optimizer, and loss
     model = EnhancedDamageModel().to(device)
@@ -139,6 +151,7 @@ def train_and_eval(use_glcm, patch_size, stride, batch_size, epochs, lr, root, o
             best_probs, best_true, best_preds = np.array(y_probs), y_true.copy(), y_pred.copy()
 
         # ----------------------LOG-----------------------
+        """
         log.append(f"{'Epoch':<30}: {epoch + 1}/{epochs}")
         log.append(f"{'Train Loss':<30}: {train_loss:.4f}")
         log.append(f"{'Confusion Matrix':<30}:\n{cm}")
@@ -148,6 +161,7 @@ def train_and_eval(use_glcm, patch_size, stride, batch_size, epochs, lr, root, o
         log.append(f"{'Epoch Duration':<30}: {hours:>2} hours, {minutes:>2} minutes, {seconds:>2} seconds")
         if epoch + 1 < epochs:      # if all epochs printed, dont add seperator
             log.append("-" * 67)
+        """
         # ------------------------------------------------
 
 

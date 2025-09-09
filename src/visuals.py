@@ -4,7 +4,7 @@ from sklearn.preprocessing import label_binarize
 from sklearn.metrics import roc_curve, auc
 
 # Function to plot the ROC curve for multiple classes
-def plot_multiclass_roc(y_true, y_prob, n_classes, class_names=None, save_path='../results/plot_multiclass_roc.jpg'):
+def plot_multiclass_roc(y_true, y_prob, n_classes, class_names=None, save_path='plot_multiclass_roc.jpg'):
 
     # Convert true labels to binary format for ROC calculation
     y_true_bin = label_binarize(y_true, classes=list(range(n_classes)))
@@ -36,7 +36,7 @@ def plot_multiclass_roc(y_true, y_prob, n_classes, class_names=None, save_path='
     #plt.show()
 
 # === Function to plot the training and validation loss curves ===
-def plot_loss_curves(train_loss_history, val_loss_history, save_path='../results/plot_loss_curves.jpg'):
+def plot_loss_curves(train_loss_history, val_loss_history, save_path='plot_loss_curves.jpg'):
     plt.figure(figsize=(10, 6))
     plt.plot(train_loss_history, label="Training Loss", linewidth=2)
     plt.plot(val_loss_history, label="Validation Loss", linewidth=2)
@@ -55,7 +55,7 @@ def plot_loss_curves(train_loss_history, val_loss_history, save_path='../results
 
 
 # Function to visualize sample predictions
-def visualize_predictions(model, dataset, device, num_samples=3, save_path='../results/visualize_predictions.jpg'):
+def visualize_predictions(model, dataset, device, num_samples=3, save_path='visualize_predictions.jpg'):
     import numpy as np
     model.eval()
     indices = np.random.choice(len(dataset), num_samples, replace=False)

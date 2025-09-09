@@ -209,7 +209,10 @@ class DamageDatasetTrain(Dataset):
         for key, value in patches_featuring_class.items():
             print(f'\t{key} : {value}')
 
-        # both the samples for validation and the samples for training which includes duplicates
+        self.patches_featuring_class = patches_featuring_class
+
+    def getDistribution(self):
+        return self.patches_featuring_class
         
         
 

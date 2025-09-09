@@ -16,6 +16,7 @@ if __name__ == "__main__":
     parser.add_argument('--lr', type=float, default=1e-6, help='Learning rate')
     parser.add_argument('--data_root', type=str, required=True, help='Path to dataset root directory')
     parser.add_argument('--oversample', type=int, required=True, help='oversample minority class by n times; undersample majority to balance')
+    parser.add_argument('--save_name', type=str, default='not_specified')
     args = parser.parse_args()
 
     start_time = time.perf_counter()  # Record the start time           PART OF TIME FUNCTION
@@ -30,7 +31,8 @@ if __name__ == "__main__":
         epochs=args.epochs,
         lr=args.lr,
         root=args.data_root,
-        oversample=args.oversample
+        oversample=args.oversample,
+        save_name=args.save_name
     )
     # ---------------------------------
 

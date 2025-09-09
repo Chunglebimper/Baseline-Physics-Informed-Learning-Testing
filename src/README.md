@@ -1,3 +1,8 @@
+# TODO
+
+Run 16x16 patch size;
+stride 4,6,8
+
 # Damage Assessment Model
 
 This is a modular PyTorch implementation for damage assessment using multi-temporal satellite imagery. The model supports physics-informed learning via GLCM-based texture loss, and includes tools for visualization, evaluation, and preprocessing.
