@@ -192,14 +192,12 @@ def train_and_eval(use_glcm, patch_size, stride, batch_size, epochs, lr, root, o
     log.append(f"{f'CMacro Precision':<30}: {macro_precision:.4f}\n\n\n")                         #LOG
 
 
-    # Visualizations
+  # Visualizations
     plot_multiclass_roc(best_true, best_probs, n_classes=5, class_names=[
         "Class 0: No Damage", "Class 1: Undamaged", "Class 2: Minor Damage",
-        "Class 3: Major Damage", "Class 4: Destroyed"
-    ])
-    plot_loss_curves(train_loss_history, val_loss_history)
-    visualize_predictions(model, val_dataset, device)
-    log.close()                                                                            # BE SURE TO CLOSE LOG
-
+        "Class 3: Major Damage", "Class 4: Destroyed"],
+        save_path=f'{results_path}/plot_multiclass_roc.jpg')
+    plot_loss_curves(train_loss_history, val_loss_history, save_path=f'{results_path}/plot_loss_curves.jpg')
+    visualize_predictions(model, val_dataset, device, save_path=f'{results_path}/visualize_predictions.jpg')
 
 
